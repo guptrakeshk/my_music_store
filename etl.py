@@ -9,8 +9,6 @@ def process_song_file(cur, filepath):
     """ A function to process song json file to extract data, process it and \ 
     load into songs dimension and artists dimension table  """
     
-    print("\n Processing song file now:", filepath)
-    
     # open song file
     df = pd.read_json(filepath, lines=True)
 
