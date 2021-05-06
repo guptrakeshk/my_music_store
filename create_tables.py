@@ -9,6 +9,8 @@ def create_database():
     """
     
     # connect to default database
+    # TODO: Any sensitive/confidential details must not be in plain-text. In production environment
+    # these database credentials must be stored securely and fetched securely.
     conn = psycopg2.connect("host=127.0.0.1 dbname=studentdb user=student password=student")
     conn.set_session(autocommit=True)
     cur = conn.cursor()
@@ -21,6 +23,8 @@ def create_database():
     conn.close()    
     
     # connect to sparkify database
+    # TODO: Any sensitive/confidential details must not be in plain-text. In production environment
+    # these Database credentials must be stored securely and fetched securely.
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
     
@@ -32,8 +36,12 @@ def drop_tables(cur, conn):
     Drops each table using the queries in `drop_table_queries` list.
     """
     for query in drop_table_queries:
-        cur.execute(query)
-        conn.commit()
+        try:
+            cur.execute(query)
+            conn.commit()
+        except psycopg2.Error as e:
+            print("Error: issue dropping table")
+            print(e)
 
 
 def create_tables(cur, conn):
@@ -41,8 +49,14 @@ def create_tables(cur, conn):
     Creates each table using the queries in `create_table_queries` list. 
     """
     for query in create_table_queries:
-        cur.execute(query)
-        conn.commit()
+        try:
+            cur.execute(query)
+            conn.commit()
+        except psycopg2.Error as e:
+            print("Error: issue creating table")
+            print(e)
+            
+
 
 
 def main():

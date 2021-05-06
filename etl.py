@@ -9,6 +9,7 @@ def process_song_file(cur, filepath):
     """ A function to process song json file to extract data, process it and \ 
     load into songs dimension and artists dimension table  """
     
+    
     # open song file
     df = pd.read_json(filepath, lines=True)
 
@@ -24,7 +25,8 @@ def process_song_file(cur, filepath):
     
 
     # extract/filter artist data from the song json file data frame
-    filtered_artist_data = df[["artist_id", "artist_name", "artist_location", "artist_latitude", "artist_longitude"]]
+    filtered_artist_data = df[["artist_id", "artist_name", "artist_location", \
+                               "artist_latitude", "artist_longitude"]]
     # Convert filtered artist data into a list of values to be inserted into artists table
     artist_data = filtered_artist_data.values.tolist()[0]
     
@@ -39,19 +41,20 @@ def process_log_file(cur, filepath):
     # open log file
     df = pd.read_json(filepath, lines=True)
 
-    # filter by NextSong action. Each log file may have more than one records. Get all data 
+    # filter by NextSong action. Each log file may have more than one records.Get all data 
     #df = 
     filtered_ts_values = df[["ts"]].values
     
     ts_data = []
-    # Iterate through each record for ts and get corresponding timestamp break up value like week, month etc. 
+    # Iterate through each record for ts and get corresponding timestamp break up value 
+    # like week, month etc. 
     for x in filtered_ts_values:
         # interim data list
         interim_data = []
         # convert timestamp column to datetime
         t = pd.Timestamp(x[0]/1000.0, unit='s', tz='US/Pacific')
 
-        interim_data.append(x[0]/1000.0)
+        interim_data.append(x[0])
         interim_data.append(t.hour)
         interim_data.append(t.day)
         interim_data.append(t.weekofyear)
@@ -97,11 +100,17 @@ def process_log_file(cur, filepath):
 
         # insert songplay record
         l_start_time = row.ts
-        songplay_data = (index+1, l_start_time, row.userId, songid, artistid, row.sessionId, row.location, row.userAgent)
+        songplay_data = (l_start_time, row.userId, songid, artistid, row.sessionId, \
+                         row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
 
 
 def process_data(cur, conn, filepath, func):
+    """ A function to collect all valid JSON files from the specified file path.
+        Iterare through each file and send it to respective specified function
+        to process data source file.
+        Display informative message to user about the number of files processed
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
@@ -121,6 +130,11 @@ def process_data(cur, conn, filepath, func):
 
 
 def main():
+    """ Main function that creates a connection object on successful connection to PostgreSQL
+        From connection object it creates a cursor object execute SQL queries.
+        Subsequently it makes call to process_data function to handle processing of
+        Song data files and event log data files specifying the filepath for each.
+    """
     conn = psycopg2.connect("host=127.0.0.1 dbname=sparkifydb user=student password=student")
     cur = conn.cursor()
 
