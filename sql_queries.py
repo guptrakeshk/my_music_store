@@ -1,3 +1,4 @@
+
 # Schema for fictitious music store that captures structured data from song data and event log data.
 # SQL queries to drop tables for fresh database tables.
 # DROP TABLES

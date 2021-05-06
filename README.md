@@ -3,7 +3,8 @@
 
 ### A Hands-On, Project-Based instruction for Data Engineering ETL
 
-This is a collection of resources for data engineering ETL for a fictious a music company
+This is a collection of resources for data engineering ETL for a fictious a music company.
+
 Email: gupt.rakeshk@gmail.com
 
 This project walks through end-to-end data engineering steps that are needed in a typical project.
@@ -17,8 +18,8 @@ Steps involved are :
 - Once data is cleansed, transformed and load, it is ready to asnwer queries for analytics.
 
 
-Here are helpful steps in executing python programs in right sequence. You must execute *create_table.py* first 
-in order to create database tables which are needed for storing fact and dimnension data.
+Here are helpful steps in executing python programs in right sequence. You must execute **create_table.py** first 
+in order to create database tables which are needed for storing fact and dimension data.
 1. execute `python create_table.py` from CLI or other interface 
 2. execute `python etl.py` from CLI or other interface 
 

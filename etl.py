@@ -18,7 +18,6 @@ def process_song_file(cur, filepath):
     
     # Convert filtered song data into a list of values to be inserted into songs table
     song_data = filtered_song_data.values.tolist()[0]
-    #print("\n Song Data: ", song_data)
     
     # insert song record
     cur.execute(song_table_insert, song_data)
