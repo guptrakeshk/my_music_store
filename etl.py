@@ -52,8 +52,8 @@ def process_log_file(cur, filepath):
         interim_data = []
         # convert timestamp column to datetime
         t = pd.Timestamp(x[0]/1000.0, unit='s', tz='US/Pacific')
-
-        interim_data.append(x[0])
+        
+        interim_data.append(t)
         interim_data.append(t.hour)
         interim_data.append(t.day)
         interim_data.append(t.weekofyear)
@@ -84,6 +84,9 @@ def process_log_file(cur, filepath):
 
     # insert user records
     for i, row in user_df.iterrows():
+        # Ignore row if userId is not a valid integer
+        if row.userId is None or row.userId == '':
+            continue;
         cur.execute(user_table_insert, row)
 
     # insert songplay records
@@ -98,7 +101,13 @@ def process_log_file(cur, filepath):
             songid, artistid = None, None
 
         # insert songplay record
-        l_start_time = row.ts
+        
+        # Convert start_time in timestamp before insertion
+        l_start_time = pd.Timestamp(row.ts/1000.0, unit='s', tz='US/Pacific')
+        
+        # Ignore row if userId is not a valid integer
+        if row.userId is None or row.userId == '':
+            continue;
         songplay_data = (l_start_time, row.userId, songid, artistid, row.sessionId, \
                          row.location, row.userAgent)
         cur.execute(songplay_table_insert, songplay_data)
